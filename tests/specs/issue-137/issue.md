@@ -33,12 +33,13 @@ plugin-authoring contract, the sensor interface, and each plugin's behavior.
 Windows-specific regressions can consequently merge while both CI legs are
 green.
 
-The current tree contains 206 command blocks across 14 executable documents.
-Most use only executable invocation, pipelines, and redirection. The remaining
-portable-harness needs are bounded: command sequencing, symlink setup, one
-command-scoped environment override, and a small number of multi-command
-blocks. The documents do not use heredocs, command substitution, process
-substitution, loops, or shell functions.
+The issue report cited 206 command blocks across 14 executable documents as
+the baseline at the time it was filed. The implementing audit must recount the
+current corpus before classifying it. The reported corpus mostly used executable
+invocation, pipelines, and redirection; the remaining portable-harness needs
+were command sequencing, symlink setup, one command-scoped environment override,
+and a small number of multi-command blocks. The report found no heredocs,
+command substitution, process substitution, loops, or shell functions.
 
 ## Product goals
 

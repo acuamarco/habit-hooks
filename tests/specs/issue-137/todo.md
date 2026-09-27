@@ -1,6 +1,6 @@
 # Tasks: Portable Executable Documentation (#137)
 
-See `tasks/plan.md` for architecture, risks, and phase overview.
+See `plan.md` for architecture, risks, and phase overview.
 
 Focused verification pattern: `uv run pytest <listed tests>` then
 `uv run ruff check <touched files>`.
@@ -158,13 +158,15 @@ missing-executable cases on pinned POSIX and pinned Windows without resolving Ba
 
 **Description:** Attach markdown-it fence start line as one-based `SourceSpan` on
 `Block`; thread `source` through `parse_spec`; format command-language SpecErrors
-with source, line, column, offending line, and caret. Update `SpecError` docstring.
+with source, line, column, offending line, and caret. Keep `SpecError` documentation
+free of docstrings, following the repository comment policy.
 
 **Acceptance criteria:**
 - [ ] `Block` carries source location; `parse_spec(text, source="<inline>")`
 - [ ] `SpecFile.collect` passes `str(self.path)`
 - [ ] Lexer/parser offsets translate through the fence span
-- [ ] `SpecError` docstring: “malformed or unrunnable spec”
+- [ ] Error behavior and tests describe malformed or unrunnable specs without
+      adding or restoring a docstring.
 
 **Verification:**
 - [ ] Tests pass: focused tests asserting error location text

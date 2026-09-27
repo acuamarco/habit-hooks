@@ -685,8 +685,9 @@ Use `SpecError` when the document or its test environment cannot be executed:
 - symlink failure; or
 - no selected command.
 
-Update its docstring from “parse-time problem” to “malformed or unrunnable
-spec.”
+Keep the error classification clear through behavior and tests without adding
+or restoring a docstring; the repository comment policy treats docstrings as
+comments.
 
 Use `SpecFailure` only after a product command ran:
 
@@ -800,8 +801,9 @@ Bash.
 
 ## Document migration
 
-The current corpus has 206 command blocks in 14 documents. Migrate by behavior,
-not file duplication.
+The issue report cited 206 command blocks in 14 documents as its historical
+baseline. Recount the current corpus during the migration inventory and migrate
+by behavior, not file duplication.
 
 ### Migration inventory gate
 
