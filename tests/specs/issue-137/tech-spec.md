@@ -1,7 +1,7 @@
 # Technical spec: portable executable documentation
 
 Product spec:
-[`137-portable-executable-documentation.md`](137-portable-executable-documentation.md)
+[`issue.md`](issue.md)
 
 Issue: [#137](https://github.com/habit-hooks/habit-hooks/issues/137)
 
