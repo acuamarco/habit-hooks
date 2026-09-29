@@ -4,6 +4,8 @@ import pytest
 
 from tests.harness.command_lexer import TokenKind, lex
 from tests.harness.command_model import Literal, SourceSpan, Variable
+from tests.harness.command_model import RedirectionKind
+from tests.harness.command_parser import parse
 from tests.harness.errors import SpecError
 
 
@@ -59,3 +61,30 @@ def test_lexer_rejects_unsupported_syntax(script: str):
 def test_lexer_reports_source_offsets_for_unterminated_quote():
     with pytest.raises(SpecError, match=r"sample.spec:8:3"):
         lex("a 'broken", source=SourceSpan("sample.spec", 8))
+
+
+def test_parser_applies_pipeline_and_sequence_precedence():
+    parsed = parse("a | b && c ; d")
+    assert len(parsed.chains) == 2
+    assert len(parsed.chains[0].pipelines) == 2
+    assert len(parsed.chains[0].pipelines[0].commands) == 2
+    assert parsed.chains[1].pipelines[0].commands[0].argv[0].parts == (Literal("d"),)
+
+
+def test_parser_preserves_assignment_expansion_and_redirection_order():
+    command = parse("A=$VALUE tool 2>&1 >out").chains[0].pipelines[0].commands[0]
+    assert command.assignments[0].name == "A"
+    assert command.assignments[0].value.parts == (Variable("VALUE"),)
+    assert [item.kind for item in command.redirections] == [RedirectionKind.DUPLICATE, RedirectionKind.OUTPUT]
+
+
+@pytest.mark.parametrize("script", [
+    "", ";a", "a;;b", "a |", "a &&", "A=1", "tool A=1", ">out tool", "2>&1 tool",
+    "cat <<EOF", "cat <<<text", "echo $(id)", "echo <(id)", "echo `id`",
+    "echo *.py", "echo (group)", "echo x # comment", "! echo x",
+    "if true", "for x in a; do echo x; done", "name() { echo x; }",
+    "export X=1", "echo x || other", "echo x &",
+])
+def test_parser_rejects_empty_or_unsupported_commands(script: str):
+    with pytest.raises(SpecError):
+        parse(script)
